@@ -8,4 +8,8 @@
     <LangVersion>7.2</LangVersion>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
+  </ItemGroup>
+
 </Project>
