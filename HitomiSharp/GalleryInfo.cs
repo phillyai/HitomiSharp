@@ -3,27 +3,26 @@ using Newtonsoft.Json.Converters;
 
 namespace HitomiSharp
 {
-    [JsonObject]
     public readonly struct GalleryInfo
     {
         [JsonProperty(PropertyName = "n")]
-        public string Title { get; }
+        public readonly string Title;
         [JsonProperty(PropertyName = "a")]
-        public string[] Artists { get; }
+        public readonly string[] Artists;
         [JsonProperty(PropertyName = "g")]
-        public string[] Groups { get; }
+        public readonly string[] Groups;
         [JsonProperty(PropertyName = "type")]
-        public string Type { get; }
-        [JsonProperty(PropertyName = "l"), JsonConverter(typeof(StringEnumConverter))]
-        public Language Language { get; }
+        public readonly string Type;
+        [JsonProperty(PropertyName = "l")]
+        public readonly string Language;
         [JsonProperty(PropertyName = "p")]
-        public string[] Series { get; }
+        public readonly string[] Series;
         [JsonProperty(PropertyName = "c")]
-        public string[] Characters { get; }
+        public readonly string[] Characters;
         [JsonProperty(PropertyName = "t")]
-        public string[] Tags { get; }
+        public readonly string[] Tags;
         [JsonProperty(PropertyName = "id")]
-        public int ID { get; }
+        public readonly int ID;
         [JsonIgnore]
         public string Url => $"https://hitomi.la/galleries/{ID}.html";
 
@@ -33,7 +32,7 @@ namespace HitomiSharp
             string[] artists,
             string[] groups,
             string type,
-            Language langauge,
+            string language,
             string[] series,
             string[] characters,
             string[] tags)
@@ -42,7 +41,7 @@ namespace HitomiSharp
             Artists = artists;
             Groups = groups;
             Type = type;
-            Language = langauge;
+            Language = language;
             Series = series;
             Characters = characters;
             Tags = tags;

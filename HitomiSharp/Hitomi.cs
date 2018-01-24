@@ -35,7 +35,7 @@ namespace HitomiSharp
 
         public static async Task<GalleryInfo[]> GetAllGalleriesAsync()
         {
-            var count = 1;//await GetJsonCouunt();
+            var count = await GetJsonCouunt();
             ConcurrentBag<GalleryInfo> result = new ConcurrentBag<GalleryInfo>();
 
             async Task DownloadChunk(int i)
@@ -62,7 +62,7 @@ namespace HitomiSharp
             await Task.WhenAll(tasks);
             return result.ToArray();
         }
-
+        
         private static HttpWebRequest CreateRequest(string url)
         {
             HttpWebRequest req = HttpWebRequest.Create(url) as HttpWebRequest;
