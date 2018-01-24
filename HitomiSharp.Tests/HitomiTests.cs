@@ -10,11 +10,7 @@ namespace HitomiSharp.Tests
         [TestMethod]
         public void GetGalleryInfoAsyncTest()
         {
-            GalleryInfo info = default;
-            Task.WaitAll(Task.Run(async () =>
-            {
-                info = await Hitomi.GetGalleryInfoAsync(405092);
-            }));
+            GalleryInfo info = Hitomi.GetGalleryInfoAsync(405092).Result;
 
             Assert.AreEqual("Sora No Omocha", info.Title);
             Assert.AreEqual(new[] { "hiten onee-ryuu" }, info.Artists);
@@ -24,11 +20,8 @@ namespace HitomiSharp.Tests
             Assert.AreEqual(new[] { "yosuga no sora" }, info.Series);
             Assert.AreEqual(new[] { "sora kasugano" }, info.Characters);
             Assert.AreEqual(new[] { "female:femdom", "female:loli", "female:sister", "female:stocking", "incest" }, info.Tags);
-
-            Task.WaitAll(Task.Run(async () =>
-            {
-                info = await Hitomi.GetGalleryInfoAsync(998175);
-            }));
+            
+            info = Hitomi.GetGalleryInfoAsync(998175).Result;
 
             Assert.AreEqual("Kimi Dake no Ponytail", info.Title);
             Assert.AreEqual(new[] { "konayama kata" }, info.Artists);
@@ -43,13 +36,7 @@ namespace HitomiSharp.Tests
         [TestMethod]
         public void GetAllGalleriesAsyncTest()
         {
-            GalleryInfo[] galleries = default;
-
-            Task.WaitAll(Task.Run(async () =>
-            {
-                galleries = await Hitomi.GetAllGalleriesAsync();
-            }));
-
+            GalleryInfo[] galleries = Hitomi.GetAllGalleriesAsync().Result;
             Assert.IsTrue(galleries.Length > 0);
         }
     }

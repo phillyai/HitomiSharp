@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace HitomiSharp
 {
@@ -13,7 +14,7 @@ namespace HitomiSharp
         public string[] Groups { get; }
         [JsonProperty(PropertyName = "type")]
         public string Type { get; }
-        [JsonProperty(PropertyName = "l"), JsonConverter(typeof(Language))]
+        [JsonProperty(PropertyName = "l"), JsonConverter(typeof(StringEnumConverter))]
         public Language Language { get; }
         [JsonProperty(PropertyName = "p")]
         public string[] Series { get; }

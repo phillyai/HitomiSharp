@@ -35,26 +35,22 @@ namespace HitomiSharp
 
         public static async Task<GalleryInfo[]> GetAllGalleriesAsync()
         {
-            var count = await GetJsonCouunt();
+            var count = 1;//await GetJsonCouunt();
             ConcurrentBag<GalleryInfo> result = new ConcurrentBag<GalleryInfo>();
 
             async Task DownloadChunk(int i)
             {
-                var url = $"https://hitomi.la/galleries{i}.js";
+                var url = $"https://hitomi.la/galleries{i}.json";
                 var req = CreateRequest(url);
-
                 using (var w = await req.GetResponseAsync())
                 using (var s = w.GetResponseStream())
                 using (var sr = new StreamReader(s))
                 using (var jr = new JsonTextReader(sr))
                 {
-                    await Task.Run(() =>
-                    {
-                        var serializer = new JsonSerializer();
-                        var galleries = serializer.Deserialize<GalleryInfo[]>(jr);
-                        foreach (var g in galleries)
-                            result.Add(g);
-                    });
+                    var serializer = new JsonSerializer();
+                    var galleries = serializer.Deserialize<GalleryInfo[]>(jr);
+                    foreach (var g in galleries)
+                        result.Add(g);
                 }
             }
 
