@@ -71,6 +71,9 @@ namespace HitomiSharp
             req.Referer = "https://hitomi.la";
             req.UserAgent = "Mozilla/5.0";
             req.KeepAlive = true;
+            req.ServicePoint.ConnectionLimit = 100;
+            req.ServicePoint.Expect100Continue = false;
+            req.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
             return req;
         }
 
