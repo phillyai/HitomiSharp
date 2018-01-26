@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Newtonsoft.Json;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -64,11 +63,87 @@ namespace HitomiSharp.Tests
             CollectionAssert.AreEqual(new string[] { "female:sole female" }, info.Tags);
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("speed")]
         public void GetAllGalleriesAsyncTest()
         {
             GalleryInfo[] galleries = Hitomi.GetAllGalleriesAsync().Result;
+            var matches = galleries.Where(g => g.ID == 405092);
+            var match = matches.First();
             Assert.IsTrue(galleries.Length > 0);
         }
+        /*
+        [TestMethod, TestCategory("speed")]
+        public void GetCountSpeedTest()
+        {
+            var count = Hitomi.GetJsonCouunt().Result;
+        }
+
+        [TestMethod, TestCategory("speed")]
+        public void Download1ChunkSpeedTest()
+        {
+            var galleries = new System.Collections.Concurrent.ConcurrentBag<GalleryInfo>();
+            System.Threading.Tasks.Task.WaitAll(Hitomi.DownloadChunk(0, galleries));
+        }
+
+        [TestMethod, TestCategory("speed")]
+        public void Download2ChunksSpeedTest()
+        {
+            var galleries = new System.Collections.Concurrent.ConcurrentBag<GalleryInfo>();
+            var tasks = new System.Collections.Generic.List<System.Threading.Tasks.Task>();
+            for (int i = 0; i < 2; i++)
+                tasks.Add(Hitomi.DownloadChunk(i, galleries));
+            System.Threading.Tasks.Task.WaitAll(tasks.ToArray());
+        }
+
+        [TestMethod, TestCategory("speed")]
+        public void Download3ChunksSpeedTest()
+        {
+            var galleries = new System.Collections.Concurrent.ConcurrentBag<GalleryInfo>();
+            var tasks = new System.Collections.Generic.List<System.Threading.Tasks.Task>();
+            for (int i = 0; i < 3; i++)
+                tasks.Add(Hitomi.DownloadChunk(i, galleries));
+            System.Threading.Tasks.Task.WaitAll(tasks.ToArray());
+        }
+
+        [TestMethod, TestCategory("speed")]
+        public void Download5ChunksSpeedTest()
+        {
+            var galleries = new System.Collections.Concurrent.ConcurrentBag<GalleryInfo>();
+            var tasks = new System.Collections.Generic.List<System.Threading.Tasks.Task>();
+            for (int i = 0; i < 5; i++)
+                tasks.Add(Hitomi.DownloadChunk(i, galleries));
+            System.Threading.Tasks.Task.WaitAll(tasks.ToArray());
+        }
+
+        [TestMethod, TestCategory("speed")]
+        public void Download10ChunksSpeedTest()
+        {
+            var galleries = new System.Collections.Concurrent.ConcurrentBag<GalleryInfo>();
+            var tasks = new System.Collections.Generic.List<System.Threading.Tasks.Task>();
+            for (int i = 0; i < 10; i++)
+                tasks.Add(Hitomi.DownloadChunk(i, galleries));
+            System.Threading.Tasks.Task.WaitAll(tasks.ToArray());
+        }
+
+        [TestMethod, TestCategory("speed")]
+        public void Download15ChunksSpeedTest()
+        {
+            var galleries = new System.Collections.Concurrent.ConcurrentBag<GalleryInfo>();
+            var tasks = new System.Collections.Generic.List<System.Threading.Tasks.Task>();
+            for (int i = 0; i < 15; i++)
+                tasks.Add(Hitomi.DownloadChunk(i, galleries));
+            System.Threading.Tasks.Task.WaitAll(tasks.ToArray());
+        }
+
+        [TestMethod, TestCategory("speed")]
+        public void Download20ChunksSpeedTest()
+        {
+            var galleries = new System.Collections.Concurrent.ConcurrentBag<GalleryInfo>();
+            var tasks = new System.Collections.Generic.List<System.Threading.Tasks.Task>();
+            for (int i = 0; i < 20; i++)
+                tasks.Add(Hitomi.DownloadChunk(i, galleries));
+            System.Threading.Tasks.Task.WaitAll(tasks.ToArray());
+        }
+        */
     }
 }
