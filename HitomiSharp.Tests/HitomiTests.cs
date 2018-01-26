@@ -7,30 +7,39 @@ namespace HitomiSharp.Tests
     [TestClass]
     public class HitomiTests
     {
+        public HitomiTests()
+        {
+            Hitomi.LoadAllGalleriesAsync().Wait();
+        }
+
         [TestMethod]
         public void GetGalleryInfoAsyncTest()
         {
-            GalleryInfo info = Hitomi.GetGalleryInfoAsync(405092).Result;
+            var val = Hitomi.GetGalleryInfo(405092);
+            Assert.IsNotNull(val);
+            var info = val.Value;
 
-            Assert.AreEqual("Sora No Omocha", info.Title);
-            Assert.AreEqual(new[] { "hiten onee-ryuu" }, info.Artists);
-            Assert.AreEqual(new[] { "shadow sorceress communication protocol" }, info.Groups);
+            Assert.AreEqual("Sora no Omocha", info.Title);
+            CollectionAssert.AreEqual(new[] { "hiten onee-ryuu" }, info.Artists);
+            CollectionAssert.AreEqual(new[] { "shadow sorceress communication protocol" }, info.Groups);
             Assert.AreEqual("doujinshi", info.Type);
             Assert.AreEqual("korean", info.Language);
-            Assert.AreEqual(new[] { "yosuga no sora" }, info.Series);
-            Assert.AreEqual(new[] { "sora kasugano" }, info.Characters);
-            Assert.AreEqual(new[] { "female:femdom", "female:loli", "female:sister", "female:stocking", "incest" }, info.Tags);
+            CollectionAssert.AreEqual(new[] { "yosuga no sora" }, info.Series);
+            CollectionAssert.AreEqual(new[] { "sora kasugano" }, info.Characters);
+            CollectionAssert.AreEqual(new[] { "female:femdom", "female:loli", "female:sister", "female:stockings", "incest" }, info.Tags);
 
-            info = Hitomi.GetGalleryInfoAsync(998175).Result;
+            val = Hitomi.GetGalleryInfo(998175);
+            Assert.IsNotNull(val);
+            info = val.Value;
 
             Assert.AreEqual("Kimi Dake no Ponytail", info.Title);
-            Assert.AreEqual(new[] { "konayama kata" }, info.Artists);
-            Assert.AreEqual(new[] { "canaria" }, info.Groups);
+            CollectionAssert.AreEqual(new[] { "konayama kata" }, info.Artists);
+            CollectionAssert.AreEqual(new[] { "canaria" }, info.Groups);
             Assert.AreEqual("doujinshi", info.Type);
             Assert.AreEqual("korean", info.Language);
-            Assert.AreEqual(new string[] { }, info.Series);
-            Assert.AreEqual(new string[] { }, info.Characters);
-            Assert.AreEqual(new[] { "male:anal", "male:crossdressing", "male:males only", "male:schoolgirl uniform", "male:shota", "male:tomgirl", "male:yaoi" }, info.Tags);
+            Assert.IsNull(info.Series);
+            Assert.IsNull(info.Characters);
+            CollectionAssert.AreEqual(new[] { "male:anal", "male:crossdressing", "male:males only", "male:schoolgirl uniform", "male:shota", "male:tomgirl", "male:yaoi" }, info.Tags);
         }
         
         [TestMethod]
@@ -63,87 +72,10 @@ namespace HitomiSharp.Tests
             CollectionAssert.AreEqual(new string[] { "female:sole female" }, info.Tags);
         }
 
-        [TestMethod, TestCategory("speed")]
+        [TestMethod]
         public void GetAllGalleriesAsyncTest()
         {
-            GalleryInfo[] galleries = Hitomi.GetAllGalleriesAsync().Result;
-            var matches = galleries.Where(g => g.ID == 405092);
-            var match = matches.First();
-            Assert.IsTrue(galleries.Length > 0);
+            Assert.IsTrue(Hitomi.IsLoaded);
         }
-        /*
-        [TestMethod, TestCategory("speed")]
-        public void GetCountSpeedTest()
-        {
-            var count = Hitomi.GetJsonCouunt().Result;
-        }
-
-        [TestMethod, TestCategory("speed")]
-        public void Download1ChunkSpeedTest()
-        {
-            var galleries = new System.Collections.Concurrent.ConcurrentBag<GalleryInfo>();
-            System.Threading.Tasks.Task.WaitAll(Hitomi.DownloadChunk(0, galleries));
-        }
-
-        [TestMethod, TestCategory("speed")]
-        public void Download2ChunksSpeedTest()
-        {
-            var galleries = new System.Collections.Concurrent.ConcurrentBag<GalleryInfo>();
-            var tasks = new System.Collections.Generic.List<System.Threading.Tasks.Task>();
-            for (int i = 0; i < 2; i++)
-                tasks.Add(Hitomi.DownloadChunk(i, galleries));
-            System.Threading.Tasks.Task.WaitAll(tasks.ToArray());
-        }
-
-        [TestMethod, TestCategory("speed")]
-        public void Download3ChunksSpeedTest()
-        {
-            var galleries = new System.Collections.Concurrent.ConcurrentBag<GalleryInfo>();
-            var tasks = new System.Collections.Generic.List<System.Threading.Tasks.Task>();
-            for (int i = 0; i < 3; i++)
-                tasks.Add(Hitomi.DownloadChunk(i, galleries));
-            System.Threading.Tasks.Task.WaitAll(tasks.ToArray());
-        }
-
-        [TestMethod, TestCategory("speed")]
-        public void Download5ChunksSpeedTest()
-        {
-            var galleries = new System.Collections.Concurrent.ConcurrentBag<GalleryInfo>();
-            var tasks = new System.Collections.Generic.List<System.Threading.Tasks.Task>();
-            for (int i = 0; i < 5; i++)
-                tasks.Add(Hitomi.DownloadChunk(i, galleries));
-            System.Threading.Tasks.Task.WaitAll(tasks.ToArray());
-        }
-
-        [TestMethod, TestCategory("speed")]
-        public void Download10ChunksSpeedTest()
-        {
-            var galleries = new System.Collections.Concurrent.ConcurrentBag<GalleryInfo>();
-            var tasks = new System.Collections.Generic.List<System.Threading.Tasks.Task>();
-            for (int i = 0; i < 10; i++)
-                tasks.Add(Hitomi.DownloadChunk(i, galleries));
-            System.Threading.Tasks.Task.WaitAll(tasks.ToArray());
-        }
-
-        [TestMethod, TestCategory("speed")]
-        public void Download15ChunksSpeedTest()
-        {
-            var galleries = new System.Collections.Concurrent.ConcurrentBag<GalleryInfo>();
-            var tasks = new System.Collections.Generic.List<System.Threading.Tasks.Task>();
-            for (int i = 0; i < 15; i++)
-                tasks.Add(Hitomi.DownloadChunk(i, galleries));
-            System.Threading.Tasks.Task.WaitAll(tasks.ToArray());
-        }
-
-        [TestMethod, TestCategory("speed")]
-        public void Download20ChunksSpeedTest()
-        {
-            var galleries = new System.Collections.Concurrent.ConcurrentBag<GalleryInfo>();
-            var tasks = new System.Collections.Generic.List<System.Threading.Tasks.Task>();
-            for (int i = 0; i < 20; i++)
-                tasks.Add(Hitomi.DownloadChunk(i, galleries));
-            System.Threading.Tasks.Task.WaitAll(tasks.ToArray());
-        }
-        */
     }
 }

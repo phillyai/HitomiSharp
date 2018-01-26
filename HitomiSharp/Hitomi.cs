@@ -4,18 +4,24 @@ using System.Collections.Concurrent;
 using System.Text.RegularExpressions;
 using System.IO;
 using System.Net;
+using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace HitomiSharp
 {
-    public class Hitomi
+    public static class Hitomi
     {
+        public static bool IsLoaded = false;
+        private static GalleryInfo[] _galleries;
         private readonly static Regex jsonCountRegex = new Regex(@"number_of_gallery_jsons\s?=\s?([0-9]+)");
         
-        public static async Task<GalleryInfo> GetGalleryInfoAsync(int id)
+        public static GalleryInfo? GetGalleryInfo(int id)
         {
-            throw new NotImplementedException();
+            if (!IsLoaded)
+                throw new Exception("아직 갤러리 목록이 안불러와졌음");
+            var matches = _galleries.Where(g => g.ID == id);
+            return matches.Count() == 0 ? (GalleryInfo?)null : matches.First();
         }
         
         public static async Task<string[]> GetImageUrls(int id)
@@ -45,36 +51,29 @@ namespace HitomiSharp
                 await Task.Run(() =>
                 {
                     var serializer = new JsonSerializer();
-                    System.Diagnostics.Debug.WriteLine($"{i} download start at {DateTime.Now.ToString("tt h:mm:ss.ffff")}", "LOG");
                     var galleries = serializer.Deserialize<GalleryInfo[]>(jr);
-                    System.Diagnostics.Debug.WriteLine($"{i} download end, start appending at {DateTime.Now.ToString("tt h:mm:ss.ffff")}", "LOG");
                     foreach (var g in galleries)
                         result.Add(g);
-                    System.Diagnostics.Debug.WriteLine($"{i} append end at {DateTime.Now.ToString("tt h:mm:ss.ffff")}", "LOG");
                 });
 
             }
         }
 
-        public static async Task<GalleryInfo[]> GetAllGalleriesAsync()
+        public static async Task LoadAllGalleriesAsync()
         {
-            System.Diagnostics.Debug.WriteLine($"Start at {DateTime.Now.ToString("tt h:mm:ss.ffff")}", "Gallaries");
             var count = await GetJsonCouunt();
-            System.Diagnostics.Debug.WriteLine($"Got count at {DateTime.Now.ToString("tt h:mm:ss.ffff")}", "Gallaries");
             ConcurrentBag<GalleryInfo> result = new ConcurrentBag<GalleryInfo>();
-            System.Diagnostics.Debug.WriteLine($"Created concurrentbag at {DateTime.Now.ToString("tt h:mm:ss.ffff")}", "Gallaries");
 
             var tasks = new List<Task>();
             for (int i = 0; i < count; i++)
             {
                 tasks.Add(DownloadChunk(i, result));
             }
-            System.Diagnostics.Debug.WriteLine($"Start tasks at {DateTime.Now.ToString("tt h:mm:ss.ffff")}", "Gallaries");
-            await Task.WhenAll(tasks.ToArray());
-            System.Diagnostics.Debug.WriteLine($"Ran all tasks at {DateTime.Now.ToString("tt h:mm:ss.ffff")}", "Gallaries");
-            var temp = result.ToArray();
-            System.Diagnostics.Debug.WriteLine($"toarray ended at {DateTime.Now.ToString("tt h:mm:ss.ffff")}", "Gallaries");
-            return temp;
+            await Task.WhenAll(tasks.ToArray())
+                .ContinueWith((t) => {
+                    IsLoaded = true;
+                    _galleries = result.ToArray();
+                });
         }
 
         private static HttpWebRequest CreateRequest(string url)
