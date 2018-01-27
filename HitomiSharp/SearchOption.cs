@@ -36,7 +36,7 @@ namespace HitomiSharp
             TagsWithout = new string[0];
         }
 
-        public bool IsGallery(GalleryInfo gallery)
+        public bool IsProfit(GalleryInfo gallery)
         {
             if (ArtistsWithout.Intersect(gallery.Artists).Count() > 0)
                 return false;
@@ -52,21 +52,39 @@ namespace HitomiSharp
                 return false;
             if (TagsWithout.Intersect(gallery.Tags).Count() > 0)
                 return false;
-            if (string.IsNullOrEmpty(Title) && gallery.Title.Contains(Title))
-                return true;
-            if (Artists.Intersect(gallery.Artists).Count() > 0)
-                return true;
-            if (Groups.Intersect(gallery.Groups).Count() > 0)
-                return true;
-            if (Language == gallery.Language)
-                return true;
-            if (Series.Intersect(gallery.Series).Count() > 0)
-                return true;
-            if (Characters.Intersect(gallery.Characters).Count() > 0)
-                return true;
-            if (Tags.Intersect(gallery.Tags).Count() > 0)
-                return true;
-            return false;
+            if (!string.IsNullOrEmpty(Title))
+                if (!gallery.Title.ToUpper().Contains(Title.ToUpper()))
+                    return false;
+            if (Artists.Length > 0)
+                if (!ContainsAll(Artists, gallery.Artists))
+                    return false;
+            if (Groups.Length > 0)
+                if (!ContainsAll(Groups, gallery.Groups))
+                    return false;
+            if (!string.IsNullOrEmpty(Language))
+                if (Language != gallery.Language)
+                    return false;
+            if (Series.Length > 0)
+                if (!ContainsAll(Series, gallery.Series))
+                    return false;
+            if (Characters.Length > 0)
+                if (!ContainsAll(Characters, gallery.Characters))
+                    return false;
+            if (Tags.Length > 0)
+                if (!ContainsAll(Tags, gallery.Tags))
+                    return false;
+            return true;
+        }
+
+        /// <summary>
+        /// Check all elements in source are in dest
+        /// </summary>
+        private static bool ContainsAll(string[] source, string[] dest)
+        {
+            foreach (var s in source)
+                if (!dest.Contains(s))
+                    return false;
+            return true;
         }
     }
 }

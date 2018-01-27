@@ -25,9 +25,7 @@ namespace HitomiSharp
         }
 
         public static IEnumerable<GalleryInfo> FilterGalleries(SearchOption option)
-        {
-
-        }
+            => _galleries.Where(g => option.IsProfit(g));
         
         public static async Task<string[]> GetImageUrls(int id)
         {
