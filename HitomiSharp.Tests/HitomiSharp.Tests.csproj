@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="HitomiTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SearchOptionTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HitomiSharp\HitomiSharp.csproj">

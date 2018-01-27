@@ -23,6 +23,11 @@ namespace HitomiSharp
             var matches = _galleries.Where(g => g.ID == id);
             return matches.Count() == 0 ? (GalleryInfo?)null : matches.First();
         }
+
+        public static IEnumerable<GalleryInfo> FilterGalleries(SearchOption option)
+        {
+
+        }
         
         public static async Task<string[]> GetImageUrls(int id)
         {
