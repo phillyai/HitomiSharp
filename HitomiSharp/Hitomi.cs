@@ -7,6 +7,7 @@ using System.Net;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace HitomiSharp
 {
@@ -15,7 +16,7 @@ namespace HitomiSharp
         public static bool IsLoaded = false;
         private static GalleryInfo[] _galleries;
         private readonly static Regex jsonCountRegex = new Regex(@"number_of_gallery_jsons\s?=\s?([0-9]+)");
-        
+
         public static GalleryInfo? GetGalleryInfo(int id)
         {
             if (!IsLoaded)
@@ -26,13 +27,25 @@ namespace HitomiSharp
 
         public static IEnumerable<GalleryInfo> FilterGalleries(SearchOption option)
             => _galleries.Where(g => option.IsProfit(g));
-        
+
         public static async Task<string[]> GetImageUrls(int id)
         {
             var url = $"https://hitomi.la/galleries/{id}.js";
-            var content = url.Substring("var galleryinfo = ".Length);
+            var content = await GetResponseAsync(url);
+            var json = content.Substring("var galleryinfo = ".Length);
+            return (from j in JArray.Parse(json)
+                    select $"https://a.hitomi.la/galleries/{id}/{j["name"]}")
+                    .ToArray();
+        }
 
-            throw new NotImplementedException();
+        public static async Task<string[]> GetThumbnailUrls(int id)
+        {
+            var url = $"https://hitomi.la/galleries/{id}.js";
+            var content = await GetResponseAsync(url);
+            var json = url.Substring("var galleryinfo = ".Length);
+            return (from j in JArray.Parse(json)
+                    select $"https://a.hitomi.la/smalltn/{id}/{j["name"]}.jpg")
+                    .ToArray();
         }
 
         private static async Task<int> GetJsonCouunt()
@@ -73,7 +86,8 @@ namespace HitomiSharp
                 tasks.Add(DownloadChunk(i, result));
             }
             await Task.WhenAll(tasks.ToArray())
-                .ContinueWith((t) => {
+                .ContinueWith((t) =>
+                {
                     IsLoaded = true;
                     _galleries = result.ToArray();
                 });

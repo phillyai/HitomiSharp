@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -12,7 +13,7 @@ namespace HitomiSharp.Tests
             Hitomi.LoadAllGalleriesAsync().Wait();
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Hitomi")]
         public void GetGalleryInfoAsyncTest()
         {
             var val = Hitomi.GetGalleryInfo(405092);
@@ -41,8 +42,22 @@ namespace HitomiSharp.Tests
             Assert.IsNull(info.Characters);
             CollectionAssert.AreEqual(new[] { "male:anal", "male:crossdressing", "male:males only", "male:schoolgirl uniform", "male:shota", "male:tomgirl", "male:yaoi" }, info.Tags);
         }
+
+        [TestMethod, TestCategory("Hitomi")]
+        public void GetImageUrlsTest()
+        {
+            var expected = (from i in Enumerable.Range(1, 28)
+                            select $"https://a.hitomi.la/galleries/405092/{i:000}.jpg")
+                            .Concat(new string[] {
+                                "https://a.hitomi.la/galleries/405092/a001.jpg",
+                                "https://a.hitomi.la/galleries/405092/a002.jpg",
+                            }).ToArray();
+            var actual = Hitomi.GetImageUrls(405092).Result;
+
+            CollectionAssert.AreEqual(expected, actual);
+        }
         
-        [TestMethod]
+        [TestMethod, TestCategory("Hitomi")]
         public void DeserializeTest()
         {
             GalleryInfo info;
@@ -72,7 +87,7 @@ namespace HitomiSharp.Tests
             CollectionAssert.AreEqual(new string[] { "female:sole female" }, info.Tags);
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("Hitomi")]
         public void GetAllGalleriesAsyncTest()
         {
             Assert.IsTrue(Hitomi.IsLoaded);
