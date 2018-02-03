@@ -1,0 +1,14 @@
+version: 1.0.{build}
+image: Visual Studio 2017
+before_build:
+- cmd: nuget restore
+build:
+  verbosity: minimal
+test_script:
+- OpenCover.Console.exe -register:user -target:"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\CommonExtensions\Microsoft\TestWindow\vstest.console.exe" -targetargs:"/logger:Appveyor HitomiSharp.Tests\bin\Debug\HitomiSharp.Tests.dll -noshadow" -output:"coverage.xml" -filter:"+[HitomiSharp*]* -[HitomiSharp.Tests*]*"
+# - cmd: vstest.console /logger:Appveyor HitomiSharp.Tests\bin\Debug\HitomiSharp.Tests.dll
+after_test:
+  - ps: |
+      $env:PATH = 'C:\msys64\usr\bin;' + $env:PATH
+      Invoke-WebRequest -Uri 'https://codecov.io/bash' -OutFile codecov.sh
+      bash codecov.sh -f "coverage.xml" -t b205824e-1df0-455d-998a-d2f1d88dceb6
