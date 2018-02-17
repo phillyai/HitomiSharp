@@ -66,7 +66,10 @@ namespace HitomiSharp
             {
                 await Task.Run(() =>
                 {
-                    var serializer = new JsonSerializer();
+                    var serializer = new JsonSerializer()
+                    {
+                        NullValueHandling = NullValueHandling.Ignore
+                    };
                     var galleries = serializer.Deserialize<GalleryInfo[]>(jr);
                     foreach (var g in galleries)
                         result.Add(g);

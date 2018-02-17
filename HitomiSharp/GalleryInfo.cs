@@ -7,21 +7,21 @@ namespace HitomiSharp
     {
         [JsonProperty(PropertyName = "n")]
         public readonly string Title;
-        [JsonProperty(PropertyName = "a")]
+        [JsonProperty(PropertyName = "a", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public readonly string[] Artists;
-        [JsonProperty(PropertyName = "g")]
+        [JsonProperty(PropertyName = "g", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public readonly string[] Groups;
-        [JsonProperty(PropertyName = "type")]
+        [JsonProperty(PropertyName = "type", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public readonly string Type;
-        [JsonProperty(PropertyName = "l")]
+        [JsonProperty(PropertyName = "l", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public readonly string Language;
-        [JsonProperty(PropertyName = "p")]
+        [JsonProperty(PropertyName = "p", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public readonly string[] Series;
-        [JsonProperty(PropertyName = "c")]
+        [JsonProperty(PropertyName = "c", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public readonly string[] Characters;
-        [JsonProperty(PropertyName = "t")]
+        [JsonProperty(PropertyName = "t", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public readonly string[] Tags;
-        [JsonProperty(PropertyName = "id")]
+        [JsonProperty(PropertyName = "id", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public readonly int ID;
         [JsonIgnore]
         public string Url => $"https://hitomi.la/galleries/{ID}.html";

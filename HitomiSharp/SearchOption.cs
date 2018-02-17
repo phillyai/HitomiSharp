@@ -38,19 +38,24 @@ namespace HitomiSharp
 
         public bool IsProfit(GalleryInfo gallery)
         {
-            if (ArtistsWithout.Intersect(gallery.Artists).Count() > 0)
-                return false;
-            if (GroupsWithout.Intersect(gallery.Groups).Count() > 0)
-                return false;
+            if (gallery.Artists != null)
+                if (ArtistsWithout.Intersect(gallery.Artists).Count() > 0)
+                    return false;
+            if (gallery.Groups != null)
+                if (GroupsWithout.Intersect(gallery.Groups).Count() > 0)
+                    return false;
             if (TypeWithout.Contains(gallery.Type))
                 return false;
             if (LanguageWithout.Contains(gallery.Language))
                 return false;
-            if (SeriesWithout.Intersect(gallery.Series).Count() > 0)
-                return false;
-            if (CharactersWithout.Intersect(gallery.Characters).Count() > 0)
-                return false;
-            if (TagsWithout.Intersect(gallery.Tags).Count() > 0)
+            if (gallery.Series != null)
+                if (SeriesWithout.Intersect(gallery.Series).Count() > 0)
+                    return false;
+            if (gallery.Characters != null)
+                if (CharactersWithout.Intersect(gallery.Characters).Count() > 0)
+                    return false;
+            if (gallery.Tags != null)
+                if (TagsWithout.Intersect(gallery.Tags).Count() > 0)
                 return false;
             if (!string.IsNullOrEmpty(Title))
                 if (!gallery.Title.ToUpper().Contains(Title.ToUpper()))
@@ -81,6 +86,11 @@ namespace HitomiSharp
         /// </summary>
         private static bool ContainsAll(string[] source, string[] dest)
         {
+            if (dest == null)
+            {
+                if (source.Length == 0) return true;
+                else return false;
+            }
             foreach (var s in source)
                 if (!dest.Contains(s))
                     return false;
