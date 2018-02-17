@@ -92,8 +92,20 @@ namespace HitomiSharp
                 .ContinueWith((t) =>
                 {
                     IsLoaded = true;
-                    _galleries = result.ToArray();
+                    _galleries = SortedGalleries(result);
                 });
+        }
+
+        private static GalleryInfo[] SortedGalleries(ConcurrentBag<GalleryInfo> g)
+        {
+            var list = g.ToList();
+            list.Sort((l, r) =>
+            {
+                if (l.ID > r.ID) return -1;
+                else if (l.ID < r.ID) return 1;
+                else return 0;
+            });
+            return list.ToArray();
         }
 
         private static HttpWebRequest CreateRequest(string url)
